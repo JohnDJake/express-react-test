@@ -1,4 +1,6 @@
-if (process.env.NODE_ENV === "development") require("dotenv").config();
+const env = process.env.NODE_ENV || "development";
+
+if (env === "development") require("dotenv").config();
 
 const express = require("express");
 
@@ -10,7 +12,7 @@ const db = require("./models");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-if (process.env.NODE_ENV === "production") app.use(express.static("client/build"));
+if (env === "production") app.use(express.static("client/build"));
 
 app.get("/api/data", (req, res) => res.json([{ id: 1, title: "data1" }, { id: 2, title: "data2" }]));
 
