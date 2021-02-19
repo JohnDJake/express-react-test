@@ -12,11 +12,13 @@ const db = require("./models");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+const verifyToken = require("./middleware/verifyToken");
+
 if (env === "production") app.use(express.static("client/build"));
 
 app.use("/api/auth", require("./controllers/auth"));
 
-app.get("/api/data", (req, res) => res.json([{ id: 1, title: "data1" }, { id: 2, title: "data2" }]));
+app.get("/api/data", verifyToken, (req, res) => res.json([{ id: 1, title: "data1" }, { id: 2, title: "data2" }]));
 
 app.get((req, res) => res.sendFile(path.join(__dirname, "./client/build/index.html")));
 
