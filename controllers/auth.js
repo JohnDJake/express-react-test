@@ -8,7 +8,10 @@ router.post("/signup", (req, res) => bcrypt.hash(req.body.password, 8).then(hash
     username: req.body.username,
     email: req.body.email,
     password: hash
-}).then(() => res.send({ message: "User was registered succesfully!" })).catch(err => handleErr(err, res))).catch(err => handleErr(err, res)));
+}).then(() => res.send({ message: "User was registered succesfully!" })).catch(err => {
+    if (err.parent.errno === 1062) res.status(409).send({ message: err.errors[0].message, field: err.errors[0].path.substring(err.errors[0].path.lastIndexOf(".") + 1) });
+    else handleErr(err, res);
+})).catch(err => handleErr(err, res)));
 
 router.post("/signin", (req, res) => db.User.findOne({ where: { username: req.body.username } }).then(user => {
     if (!user) return res.status(404).send({ message: "User not found." });
