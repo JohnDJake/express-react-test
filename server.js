@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+const db = require("./models");
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -12,5 +14,5 @@ app.get("/api/data", (req, res) => res.json([{ id: 1, title: "data1" }, { id: 2,
 
 app.get((req, res) => res.sendFile(path.join(__dirname, "./client/build/index.html")));
 
-app.listen(PORT, () => console.log(`API Server now listening on PORT ${PORT}`));
+db.sequelize.sync().then(() => app.listen(PORT, () => console.log(`API Server now listening on PORT ${PORT}`)));
 
